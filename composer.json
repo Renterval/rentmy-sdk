@@ -1,0 +1,17 @@
+{
+    "name": "rentmy/rentmydev",
+    "description": "RentMy sdk",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Mohsin Kabir",
+            "email": "mkabir@leapinglogic.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RentMy\\": "src/"
+        }
+    },
+    "require": {}
+}
