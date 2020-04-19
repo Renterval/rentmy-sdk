@@ -1,12 +1,12 @@
 {
-    "name": "rentmy/rentmydev",
+    "name": "rentmy",
     "description": "RentMy sdk",
     "type": "library",
     "license": "MIT", 
     "authors": [
         {
-            "name": "Mohsin Kabir",
-            "email": "mkabir@leapinglogic.com"
+            "name": "Leaping Logic LLC",
+            "email": "info@leapinglogic.com"
         }
     ],
     "autoload": {
