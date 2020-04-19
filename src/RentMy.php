@@ -8,10 +8,10 @@ class RentMy
 
     public function __construct()
     {
-
     }
 
-    public static function httpGet($slashedPath = null, $token = null, $queryParams = []){
+    public static function httpGet($slashedPath = null, $token = null, $queryParams = [])
+    {
         // Create a new cURL resource
         $curl = curl_init();
         $get_fields_string = null;
@@ -36,7 +36,6 @@ class RentMy
             rtrim($get_fields_string, '&');
             $get_fields_string = '?' . $get_fields_string;
         }
-
 
 
         if (!empty($token)) {
@@ -93,7 +92,8 @@ class RentMy
 
     }
 
-    public static function httpPost($slashedPath = null, $token = null, $postFields = []){
+    public static function httpPost($slashedPath = null, $token = null, $postFields = [])
+    {
         // Create a new cURL resource
         $curl = curl_init();
         $post_fields_string = null;
@@ -174,6 +174,14 @@ class RentMy
         return !empty($html) ? json_decode($html, true) : $error;
     }
 
+    /**
+     * Debug any array
+     * @param $var
+     */
+    public static function pr($var)
+    {
+        print_r("<pre>");print_r($var);print_r("</pre>");
+    }
 
 }
 

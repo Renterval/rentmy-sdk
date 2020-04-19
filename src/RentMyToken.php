@@ -1,7 +1,6 @@
 <?php
 
 namespace RentMy;
-require_once 'RentMy.php';
 
 Class RentMyToken extends RentMy
 {
@@ -10,14 +9,14 @@ Class RentMyToken extends RentMy
 
     public function __construct()
     {
-
+        parent::__construct();
     }
-
 
     /**
      * Get AccessToken
+     * @param $rentmy_apiKey
+     * @param $rentmy_secretKey
      * @return mixed
-     * @todo check domain name
      */
     public function getToken($rentmy_apiKey, $rentmy_secretKey)
     {
@@ -33,19 +32,11 @@ Class RentMyToken extends RentMy
                     'api_secret' => $this->apiSecret
                 ]
             );
-
-            if (!empty($response['result']['data']['token'])) {
-
-                $_SESSION['rentmy_accessToken'] = $response['result']['data']['token'];
-                $_SESSION['rentmy_refreshToken'] = $response['result']['data']['refresh_token'];
-                $_SESSION['rentmy_storeId'] = $response['result']['data']['store_id'];
-                $_SESSION['rentmy_locationId'] = $response['result']['data']['location_id'];
-            }
+            return $response['result']['data'];
 
         } catch (Exception $e) {
 
         }
-
     }
 
 }

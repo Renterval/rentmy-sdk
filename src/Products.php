@@ -1,18 +1,25 @@
 <?php
 
-
 namespace RentMy;
-require_once 'RentMy.php';
 
 class Products extends RentMy
 {
-    public $rentmy_accessToken = '';
-    public $rentmy_locationId = '';
 
-    public function __construct(){
-        $this->rentmy_accessToken = $_SESSION['rentmy_accessToken'];
-        $this->rentmy_locationId = $_SESSION['rentmy_locationId'];
+    public $accessToken;
+    public $locationId;
+
+    /**
+     * Products constructor.
+     * @param $accessToken
+     * @param $location_id
+     */
+    public function __construct($accessToken, $location_id)
+    {
+        $this->accessToken = $accessToken;
+        $this->locationId = $location_id;
+        parent::__construct();
     }
+
     /**
      * @param $params
      * @return mixed
@@ -23,8 +30,8 @@ class Products extends RentMy
             $response = self::httpPost(
                 '/products/online',
                 [
-                    'token' => $this->rentmy_accessToken,
-                    'location' => $this->rentmy_locationId
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 [
                     'page_no' => $params['page_no'],
@@ -34,8 +41,8 @@ class Products extends RentMy
                     'price_min' => $params['price_min'],
                     'purchase_type' => $params['purchase_type'],
                     'all' => true,
-                    'sort'=> !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type'=> !empty($params['sort_type']) ? $params['sort_type'] : ''
+                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
+                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
                 ]
             );
             return $response;
@@ -66,8 +73,8 @@ class Products extends RentMy
                     'price_min' => $params['price_min'],
                     'purchase_type' => $params['purchase_type'],
                     'all' => true,
-                    'sort'=> !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type'=> !empty($params['sort_type']) ? $params['sort_type'] : ''
+                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
+                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
                 ]
             );
             return $response;
@@ -95,8 +102,8 @@ class Products extends RentMy
                     'limit' => $params['limit'],
                     'search' => $params['search'],
                     'category_id' => '',
-                    'sort'=> !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type'=> !empty($params['sort_type']) ? $params['sort_type'] : ''
+                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
+                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
                 ]
             );
             return $response;
@@ -114,13 +121,13 @@ class Products extends RentMy
     {
         try {
 
-            if( !empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date']) ){
+            if (!empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date'])) {
                 $add_params = '&token=' . $cart_params['token'] . '&start_date=' . urlencode($cart_params['start_date']) . '&end_date=' . urlencode($cart_params['end_date']);
             } else {
                 $add_params = '';
             }
 
-            $location_id =$this->rentmy_locationId;
+            $location_id = $this->rentmy_locationId;
             $response = self::httpGet(
                 '/products/' . $product_id . '?location=' . $location_id . $add_params,
                 [
@@ -143,7 +150,7 @@ class Products extends RentMy
     {
         try {
 
-            if( !empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date']) ){
+            if (!empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date'])) {
                 $add_params = '&token=' . $cart_params['token'] . '&start_date=' . $cart_params['start_date'] . '&end_date=' . $cart_params['end_date'];
             } else {
                 $add_params = '';
@@ -268,7 +275,7 @@ class Products extends RentMy
         try {
             $location_id = $this->rentmy_locationId;
             $response = self::httpGet(
-                '/products/'.$product_id.'/addons?required=true&location=' . $location_id,
+                '/products/' . $product_id . '/addons?required=true&location=' . $location_id,
                 [
                     'token' => $this->rentmy_accessToken,
                     'location' => $location_id
@@ -290,7 +297,7 @@ class Products extends RentMy
         try {
             $location_id = $this->rentmy_locationId;
             $response = self::httpPost(
-                '/products/'.$product_id.'/user/related-products',
+                '/products/' . $product_id . '/user/related-products',
                 [
                     'token' => $this->rentmy_accessToken,
                     'location' => $location_id
@@ -307,7 +314,8 @@ class Products extends RentMy
      * Get list of featured items
      * @return mixed
      */
-    function get_featured_products(){
+    function get_featured_products()
+    {
         try {
             $location_id = $this->rentmy_locationId;
             $response = self::httpGet(
@@ -327,7 +335,8 @@ class Products extends RentMy
      * Get exact duration of a selected date
      * @return mixed
      */
-    function getExactDuration($start_date){
+    function getExactDuration($start_date)
+    {
         try {
             $location_id = $this->rentmy_locationId;
             $response = self::httpPost(
@@ -350,7 +359,8 @@ class Products extends RentMy
      * Get duration from a given date and time
      * @return mixed
      */
-    function getDatesFromDuration($data){
+    function getDatesFromDuration($data)
+    {
         try {
             $location_id = $this->rentmy_locationId;
             $data['location_id'] = $location_id;
@@ -372,7 +382,8 @@ class Products extends RentMy
      * Get duration from a start_date date and price id
      * @return mixed
      */
-    function getDatesPriceDuration($data){
+    function getDatesPriceDuration($data)
+    {
         try {
             $location_id = $this->rentmy_locationId;
             $add_params = '?start_date=' . urlencode($data['start_date']) . '&price_id=' . $data['price_id'] . '&location=' . $location_id;
