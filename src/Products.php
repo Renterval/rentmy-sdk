@@ -36,7 +36,7 @@ class Products extends RentMy
                 [
                     'page_no' => $params['page_no'],
                     'limit' => $params['limit'],
-                    'tag_id' => $params['tag_id'],
+                    'tag_id' => !empty($params['tag_id'])?$params['tag_id']:'',
                     'price_max' => !empty($params['price_max'])?$params['price_max']:'',
                     'price_min' => !empty($params['price_min'])?$params['price_min']:'',
                     'purchase_type' => !empty($params['purchase_type'])?$params['purchase_type']:'',
