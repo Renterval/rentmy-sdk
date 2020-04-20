@@ -23,7 +23,7 @@ class Products extends RentMy
     /**
      * @param $params
      * @return mixed
-     */
+     */ 
     function productList($params)
     {
         try {
@@ -62,8 +62,8 @@ class Products extends RentMy
             $response = self::httpPost(
                 '/category/products/' . $params['category_id'],
                 [
-                    'token' => $this->rentmy_accessToken,
-                    'location' => $this->rentmy_locationId,
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId,
                 ],
                 [
                     'page_no' => $params['page_no'],
@@ -94,8 +94,8 @@ class Products extends RentMy
             $response = self::httpPost(
                 '/search/products/',
                 [
-                    'token' => $this->rentmy_accessToken,
-                    'location' => $this->rentmy_locationId,
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId,
                 ],
                 [
                     'page_no' => $params['page_no'],
@@ -127,11 +127,11 @@ class Products extends RentMy
                 $add_params = '';
             }
 
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpGet(
                 '/products/' . $product_id . '?location=' . $location_id . $add_params,
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                 ],
                 null
             );
@@ -156,11 +156,11 @@ class Products extends RentMy
                 $add_params = '';
             }
 
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpGet(
                 '/package-details/' . $product_id . '/360?location=' . $location_id . $add_params,
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                 ],
                 null,
 
@@ -181,7 +181,7 @@ class Products extends RentMy
     {
         try {
 
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $params = [];
             foreach ($data['products'] as $p) {
                 $params['variants[]'] = $p['variants_products_id'];
@@ -190,7 +190,7 @@ class Products extends RentMy
             $response = self::httpPost(
                 '/package/' . $data['product_uid'] . '/availability',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                 ],
                 $params
             );
@@ -213,7 +213,7 @@ class Products extends RentMy
             $response = self::httpGet(
                 '/variant-chain?product_id=' . $data['product_id'] . '&variant_id=' . $data['variant_id'] . '&variant_chain=',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                 ],
                 null
             );
@@ -229,8 +229,8 @@ class Products extends RentMy
             $response = self::httpGet(
                 '/get-path-of-chain?product_id=' . $data['product_id'] . '&variant_id=' . $data['variant_id'] . '&variant_chain=' . $data['chain_id'],
                 [
-                    'token' => $this->rentmy_accessToken,
-                    'location' => $this->rentmy_locationId,
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId,
                 ],
                 null
             );
@@ -248,14 +248,14 @@ class Products extends RentMy
     {
         try {
 
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $params = $data;
             $params['location'] = $location_id;
             $response = self::httpPost(
                 '/get-price-value',
                 [
-                    'token' => $this->rentmy_accessToken,
-                    'location' => $this->rentmy_locationId,
+                    'token' => $this->accessToken,
+                    'location' => $location_id,
                 ],
                 $params,
             );
@@ -273,11 +273,11 @@ class Products extends RentMy
     function get_addon_products($product_id)
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpGet(
                 '/products/' . $product_id . '/addons?required=true&location=' . $location_id,
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ]
             );
@@ -295,11 +295,11 @@ class Products extends RentMy
     function get_related_products($product_id)
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpPost(
                 '/products/' . $product_id . '/user/related-products',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ]
             );
@@ -317,11 +317,11 @@ class Products extends RentMy
     function get_featured_products()
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpGet(
                 '/products/featured',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ]
             );
@@ -338,11 +338,11 @@ class Products extends RentMy
     function getExactDuration($start_date)
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $response = self::httpPost(
                 '/product/get_exact_duration',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ],
                 [
@@ -362,12 +362,12 @@ class Products extends RentMy
     function getDatesFromDuration($data)
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $data['location_id'] = $location_id;
             $response = self::httpPost(
                 '/product/get_dates_from_duration',
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ],
                 $data
@@ -385,12 +385,12 @@ class Products extends RentMy
     function getDatesPriceDuration($data)
     {
         try {
-            $location_id = $this->rentmy_locationId;
+            $location_id = $this->locationId;
             $add_params = '?start_date=' . urlencode($data['start_date']) . '&price_id=' . $data['price_id'] . '&location=' . $location_id;
             $response = self::httpGet(
                 '/product/get_dates_price_duration' . $add_params,
                 [
-                    'token' => $this->rentmy_accessToken,
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ]
             );
