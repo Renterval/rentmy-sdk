@@ -83,9 +83,9 @@ Class Cart extends RentMy
     function viewCart()
     {
         try {
-            $response = self::fetch(
+            $response = self::httpGet(
                 '/carts/' . $_SESSION['rentmy_cart_token'],
-                get_option('rentmy_accessToken'),
+                $this->accessToken,
                 null,
                 null
             );
@@ -102,8 +102,8 @@ Class Cart extends RentMy
     function get_related_products_cart($token)
     {
         try {
-            $location_id = get_option('rentmy_locationId');
-            $response = self::rentmy_fetch(
+            $location_id = $this->locationId;
+            $response = self::httpPost(
                 '/products/'.$token.'/user/related-products?source=cart',
                 [
                     'token' => get_option('rentmy_accessToken'),
@@ -218,6 +218,51 @@ Class Cart extends RentMy
         } catch (Exception $e) {
 
         }
+    }
+    /**
+     * Get cart Token from session
+     */
+    function getCartToken()
+    {
+        return $_SESSION['rentmy_cart_token'];
+    }
+
+    /** Set cart token to Session */
+    function setCartToken($token)
+    {
+        $_SESSION['rentmy_cart_token'] = $token;
+    }
+
+    /** Save cart details into session */
+    function setCartSession($data)
+    {
+        $_SESSION['rentmy_cart'] = $data;
+    }
+
+    /** Get Cart details from session */
+    function getCartSession()
+    {
+        return $_SESSION['rentmy_cart'];
+    }
+
+    // set rent start date
+    function setRentStart($date){
+        $_SESSION['rentmy_rent_start'] = $date;
+    }
+
+    // set rent end date
+    function setRentEnd($date){
+        $_SESSION['rentmy_rent_end'] = $date;
+    }
+
+    // get rent start date
+    function getRentStart(){
+        return $_SESSION['rentmy_rent_start'];
+    }
+
+    // get rent end date
+    function getRentEnd(){
+        return $_SESSION['rentmy_rent_end'];
     }
 
 }
