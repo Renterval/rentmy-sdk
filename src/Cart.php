@@ -8,9 +8,8 @@ Class Cart extends RentMy
     private $locationId;
     private $cartToken;
     private $accessToken;
-    function __construct($accessToken, $locationId, $cartToken){
+    function __construct($accessToken, $locationId){
         $this->locationId = $locationId;
-        $this->cartToken = $cartToken;
         $this->accessToken = $accessToken;
     }
     /**
@@ -21,7 +20,7 @@ Class Cart extends RentMy
     {
         try {
             $params['location'] = $this->locationId;
-            $params['token'] = $this->cartToken;
+            $params['token'] = $_SESSION['cart_token'];
             $response = self::httpPost(
                 '/carts/add-to-cart',
                 $this->accessToken,
@@ -51,13 +50,12 @@ Class Cart extends RentMy
     function addPackageToCart($params)
     {
         try {
-            $params['location'] = get_option('rentmy_locationId');
-            $params['token'] = $_SESSION['rentmy_cart_token'];
-            $response = self::rentmy_fetch(
+            $params['location'] = $this->locationId;
+            $params['token'] = $_SESSION['cart_token'];
+            $response = self::httpPost(
                 '/carts/add-to-cart',
-                get_option('rentmy_accessToken'),
+                $this->accessToken,
                 $params,
-                null
             );
             if ($response['status'] == 'OK') {
                 if (!empty($response['result']['data']['token'])) {
@@ -84,7 +82,7 @@ Class Cart extends RentMy
     {
         try {
             $response = self::httpGet(
-                '/carts/' . $_SESSION['rentmy_cart_token'],
+                '/carts/' . $_SESSION['cart_token'],
                 $this->accessToken,
                 null,
                 null
@@ -106,7 +104,7 @@ Class Cart extends RentMy
             $response = self::httpPost(
                 '/products/'.$token.'/user/related-products?source=cart',
                 [
-                    'token' => get_option('rentmy_accessToken'),
+                    'token' => $this->accessToken,
                     'location' => $location_id
                 ]
             );
@@ -124,16 +122,16 @@ Class Cart extends RentMy
     function updateCart($params)
     {
         try {
-            $response = self::fetch(
+            $response = self::httpPost(
                 '/carts/update',
                 [
-                    'token' => get_option('rentmy_accessToken'),
-                    'location' => get_option('rentmy_locationId')
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 [
                     'id' => $params['id'],
                     'increment' => $params['increment'],
-                    'token' => $_SESSION['rentmy_cart_token'],
+                    'token' => $_SESSION['cart_token'],
                     'price' => $params['price'],
                 ]
             );
@@ -151,16 +149,16 @@ Class Cart extends RentMy
     function getCartAvailability($params)
     {
         try {
-            $response = self::rentmy_fetch(
+            $response = self::httpPost(
                 '/products/availability',
                 [
-                    'token' => get_option('rentmy_accessToken'),
-                    'location' => get_option('rentmy_locationId')
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 [
                     'start_date' => $params['start_date'],
                     'end_date' => $params['end_date'],
-                    'token' => $_SESSION['rentmy_cart_token'],
+                    'token' => $_SESSION['cart_token'],
                     'type' => $params['type'],
                     'source' => $params['source'],
                 ]
@@ -181,13 +179,13 @@ Class Cart extends RentMy
             $response = self::fetch(
                 '/carts/cart-remove-item',
                 [
-                    'token' => get_option('rentmy_accessToken'),
-                    'location' => get_option('rentmy_locationId')
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 [
                     'cart_item_id' => $params['cart_item_id'],
                     'product_id' => $params['product_id'],
-                    'token' => $_SESSION['rentmy_cart_token']
+                    'token' => $_SESSION['cart_token']
                 ]
             );
             return $response;
@@ -206,12 +204,12 @@ Class Cart extends RentMy
             $response = self::fetch(
                 '/carts/apply-coupon',
                 [
-                    'token' => get_option('rentmy_accessToken'),
-                    'location' => get_option('rentmy_locationId')
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 [
                     'coupon' => $params['coupon'],
-                    'token' => $_SESSION['rentmy_cart_token']
+                    'token' => $_SESSION['cart_token']
                 ]
             );
             return $response;
@@ -224,45 +222,45 @@ Class Cart extends RentMy
      */
     function getCartToken()
     {
-        return $_SESSION['rentmy_cart_token'];
+        return $_SESSION['cart_token'];
     }
 
     /** Set cart token to Session */
     function setCartToken($token)
     {
-        $_SESSION['rentmy_cart_token'] = $token;
+        $_SESSION['cart_token'] = $token;
     }
 
     /** Save cart details into session */
     function setCartSession($data)
     {
-        $_SESSION['rentmy_cart'] = $data;
+        $_SESSION['cart'] = $data;
     }
 
     /** Get Cart details from session */
     function getCartSession()
     {
-        return $_SESSION['rentmy_cart'];
+        return $_SESSION['cart'];
     }
 
     // set rent start date
     function setRentStart($date){
-        $_SESSION['rentmy_rent_start'] = $date;
+        $_SESSION['rent_start'] = $date;
     }
 
     // set rent end date
     function setRentEnd($date){
-        $_SESSION['rentmy_rent_end'] = $date;
+        $_SESSION['rent_end'] = $date;
     }
 
     // get rent start date
     function getRentStart(){
-        return $_SESSION['rentmy_rent_start'];
+        return $_SESSION['rent_start'];
     }
 
     // get rent end date
     function getRentEnd(){
-        return $_SESSION['rentmy_rent_end'];
+        return $_SESSION['rent_end'];
     }
 
 }
