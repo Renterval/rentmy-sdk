@@ -162,7 +162,7 @@ class Products extends RentMy
                 [
                     'token' => $this->accessToken,
                 ],
-                null,
+                null
 
             );
             // print_r("<pre>");print_r($response);print_r("</pre>");
@@ -257,7 +257,7 @@ class Products extends RentMy
                     'token' => $this->accessToken,
                     'location' => $location_id,
                 ],
-                $params,
+                $params
             );
             return $response;
         } catch (Exception $e) {
