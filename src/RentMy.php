@@ -6,6 +6,8 @@ class RentMy
 {
     public static $apiUrl = 'http://client-api-stage.rentmy.leaperdev.rocks/api';
 
+    public static $S3URL = 'https://s3.us-east-2.amazonaws.com/pimg.rentmy.co/products/';
+
     public function __construct()
     {
     }
@@ -276,6 +278,28 @@ class RentMy
         $pagination .= '</div>';
 
         return $pagination;
+    }
+
+    /**
+     * Pagination
+     * @param int $product_id
+     * @param $imageName
+     * @param int $limit
+     * @return string
+     */
+    public static function productImageLink($product_id, $storeId, $imageName, $defaultImg){
+        $s3_url = self::$S3URL;
+    
+        if(!empty($imageName)){
+                $imageLink =  $s3_url . $storeId . '/' . $product_id . '/' . $imageName;
+    
+        }else{
+            // $imageLink = 'img/no_image.jpg';
+            $imageLink = $defaultImg;
+        }
+    
+        return $imageLink;
+    
     }
 
 }
