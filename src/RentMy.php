@@ -222,7 +222,7 @@ class RentMy
 
 		        	}else{
 						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
-						if($page == 3){
+						if($page >= 3){
 							$pagination .= '<a href="products.php?page_no='.($i+1).'">'.($i+1).'</a>';
 						}
 		        	}
@@ -255,7 +255,9 @@ class RentMy
 		        		$pagination .= '<a href="products.php?page_no='.($i-1).'">'.($i-1).'</a>';
 						$pagination .= '<a href="products.php?page_no='.$i.'" class="active">'.$i.'</a>';
 		        	}else{
-		        		$pagination .= '<a href="products.php?page_no='.($i-1).'">'.($i-1).'</a>';
+		        		if($page != ($lastpage-1)){
+		        			$pagination .= '<a href="products.php?page_no='.($i-1).'">'.($i-1).'</a>';
+		        		}
 						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
 		        	}
         		}
