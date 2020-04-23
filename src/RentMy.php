@@ -183,6 +183,99 @@ class RentMy
         print_r("<pre>");print_r($var);print_r("</pre>");
     }
 
+    /**
+     * Pagination
+     * @param int $page
+     * @param $total
+     * @param int $limit
+     * @return string
+     */
+
+    public static function pagination($page=1, $total=0, $limit=10){
+        $lastpage = ceil($total / $limit);
+        $prev = $page - 1;                           
+        $next = $page + 1;
+        $lpm1 = $lastpage - 1;
+        $track = 0;
+        $track2 = 0;
+        $count = 0;
+        $pagination = '<div class="pagination">';
+        if($page <= 1){
+        $pagination	.= '<a href="#" onclick="return false;">&laquo;</a>';
+	    }else{
+	        $pagination	.= '<a href="products.php?page_no='.$prev.'">&laquo;</a>';
+	    }
+
+        for ($i=1; $i <= $lastpage; $i++) { 
+        	if($lastpage <= 6){
+	        	if($i==$page){
+					$pagination .= '<a href="products.php?page_no='.$i.'" class="active">'.$i.'</a>';
+	        	}else{
+					$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
+	        	}
+        	}else{
+        		if ($i<=1) {
+		        	if($i==$page){
+						$pagination .= '<a href="products.php?page_no='.$i.'" class="active">'.$i.'</a>';
+					$pagination .= '<a href="products.php?page_no='.($i+1).'">'.($i+1).'</a>';
+					$pagination .= '<a onclick="return false;">...</a>';
+
+		        	}else{
+						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
+						if($page == 3){
+							$pagination .= '<a href="products.php?page_no='.($i+1).'">'.($i+1).'</a>';
+						}
+		        	}
+		        	$count++;
+        		}
+        		if($track == 0 && $i>2 && $page > 4){
+        		    $pagination .= '<a onclick="return false;">...</a>';
+        		    $track = 1;
+        		}
+
+        		if($page>=2 && $page <= ($lastpage -1)){
+		        	if($i==$page-1 && $page > 3){
+						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
+		        	}
+		        	if($i==$page){
+						$pagination .= '<a href="products.php?page_no='.$i.'" class="active">'.$i.'</a>';
+		        	}
+		        	if($i==$page+1 && $page < ($lastpage -2)){
+						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
+						$track2 = 2;
+		        	}
+        		}
+        		if($track2 == 2 && $page < ($lastpage-3) ){
+        			$pagination .= '<a onclick="return false;">...</a>';
+        			$track2 = 1;
+        		}
+        		
+        		if ($i>= ($lastpage)) {
+		        	if($i==$page){
+		        		$pagination .= '<a href="products.php?page_no='.($i-1).'">'.($i-1).'</a>';
+						$pagination .= '<a href="products.php?page_no='.$i.'" class="active">'.$i.'</a>';
+		        	}else{
+		        		$pagination .= '<a href="products.php?page_no='.($i-1).'">'.($i-1).'</a>';
+						$pagination .= '<a href="products.php?page_no='.$i.'">'.$i.'</a>';
+		        	}
+        		}
+
+
+
+        	}
+        	
+        }
+        if($page >= $lastpage){
+        $pagination	.= '<a href="#" onclick="return false;">&raquo;</a>';
+	    }else{
+	        $pagination	.= '<a href="products.php?page_no='.$next.'">&raquo;</a>';
+	    }
+
+        $pagination .= '</div>';
+
+        return $pagination;
+    }
+
 }
 
 ?>
