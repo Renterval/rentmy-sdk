@@ -217,7 +217,7 @@ class Products extends RentMy
                 ],
                 null
             );
-            return !empty($response['data']) ? $response['data'] : [];
+            return !empty($response['result']['data']) ? $response['result']['data'] : [];
         } catch (Exception $e) {
 
         }
@@ -234,7 +234,7 @@ class Products extends RentMy
                 ],
                 null
             );
-            return !empty($response['data']) ? $response['data'] : [];
+            return !empty($response['result']['data']) ? $response['result']['data'] : [];
         } catch (Exception $e) {
 
         }
