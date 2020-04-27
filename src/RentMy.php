@@ -302,6 +302,29 @@ class RentMy
     
     }
 
+    public static function currency($amount = 0, $pre_class = 'pre', $amount_class = 'amount', $post_class = 'post')
+    {
+        $config = $_SESSION['config'];
+        $currency = !empty($config['currency_format']) ? $config['currency_format'] : '';
+        if (empty($amount)) {
+            $amount = 0;
+        }
+        $amount = number_format($amount, 2);
+        if (!empty($currency)) {
+            $html = '';
+            if ($currency['pre']) {
+                $html .= "<span class='" . $pre_class . "'>" . $currency['symbol'] . "</span>";
+            }
+            $html .= "<span class='" . $amount_class . "'>" . $amount . "</span>";
+            if ($currency['post']) {
+                $html .= "<span class='" . $post_class . "'>" . $currency['code'] . " </span>";
+            }
+        } else {
+            $html = "<span class='" . $pre_class . "'>$</span><span class='" . $amount_class . "'>" . $amount . "</span><span class='" . $post_class . "'> USD</span>";
+        }
+        return $html;
+    }
+
 }
 
 ?>
