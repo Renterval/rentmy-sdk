@@ -43,7 +43,7 @@ class Config extends RentMy{
      * Get categories with threaded mode
      * @return mixed|string|null
      */
-    function categories()
+    public function categories()
     {
         try {
             $response = self::httpGet(
@@ -62,7 +62,7 @@ class Config extends RentMy{
      * Get Store config
      * @return mixed
      */
-    function store_config()
+    public function store_config()
     {
         try {
             if (empty($_SESSION['config'])) {
@@ -72,7 +72,7 @@ class Config extends RentMy{
                 );
                 $_SESSION['config'] = $response['result']['data']['config'];
             }
-            return  $response['result']['data']['config'];
+            return  $_SESSION['config'];
 
         } catch (Exception $e) {
 
@@ -83,7 +83,7 @@ class Config extends RentMy{
      * Get Store Contents
      * @return mixed
      */
-    function store_contents()
+    public function store_contents()
     {
         try {
             $response = self::httpGet(
@@ -104,7 +104,7 @@ class Config extends RentMy{
      * Get country list
      * @return mixed
      */
-    function countries()
+    public function countries()
     {
         $response = self::httpGet(
             '/countries',
@@ -115,7 +115,7 @@ class Config extends RentMy{
     }
 
     // get delivery settings
-    function getDeliverySettings()
+   public function getDeliverySettings()
     {
         try {
             $response = self::httpGet(
@@ -131,7 +131,7 @@ class Config extends RentMy{
     }
 
     // get location list
-    function getLocationList()
+    public function getLocationList()
     {
         try {
             $response = self::httpGet(
@@ -148,7 +148,7 @@ class Config extends RentMy{
     }
 
     // get payment gateways that are enabled
-    function getPaymentGateWays()
+    public function getPaymentGateWays()
     {
         $response = self::httpGet(
             '/payments/gateway?is_online=1',
