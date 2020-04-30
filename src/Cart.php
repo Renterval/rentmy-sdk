@@ -55,7 +55,7 @@ Class Cart extends RentMy
             $response = self::httpPost(
                 '/carts/add-to-cart',
                 $this->accessToken,
-                $params,
+                $params
             );
             if ($response['status'] == 'OK') {
                 if (!empty($response['result']['data']['token'])) {
@@ -84,7 +84,6 @@ Class Cart extends RentMy
             $response = self::httpGet(
                 '/carts/' . $_SESSION['cart_token'],
                 $this->accessToken,
-                null,
                 null
             );
             return $response;
