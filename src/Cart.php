@@ -11,6 +11,7 @@ Class Cart extends RentMy
     function __construct($accessToken, $locationId){
         $this->locationId = $locationId;
         $this->accessToken = $accessToken;
+        $this->cartToken = isset($_SESSION['cart_token'])?$_SESSION['cart_token']:'';
     }
     /**
      * submit cart using these method
@@ -20,7 +21,7 @@ Class Cart extends RentMy
     {
         try {
             $params['location'] = $this->locationId;
-            $params['token'] = $_SESSION['cart_token'];
+            $params['token'] = $this->cartToken;
             $response = self::httpPost(
                 '/carts/add-to-cart',
                 $this->accessToken,
@@ -51,7 +52,7 @@ Class Cart extends RentMy
     {
         try {
             $params['location'] = $this->locationId;
-            $params['token'] = $_SESSION['cart_token'];
+            $params['token'] = $this->cartToken;
             $response = self::httpPost(
                 '/carts/add-to-cart',
                 $this->accessToken,
@@ -82,7 +83,7 @@ Class Cart extends RentMy
     {
         try {
             $response = self::httpGet(
-                '/carts/' . $_SESSION['cart_token'],
+                '/carts/' . $this->cartToken,
                 $this->accessToken,
                 null
             );
@@ -157,7 +158,7 @@ Class Cart extends RentMy
                 [
                     'start_date' => $params['start_date'],
                     'end_date' => $params['end_date'],
-                    'token' => $_SESSION['cart_token'],
+                    'token' => $this->cartToken,
                     'type' => $params['type'],
                     'source' => $params['source'],
                 ]
@@ -184,7 +185,7 @@ Class Cart extends RentMy
                 [
                     'cart_item_id' => $params['cart_item_id'],
                     'product_id' => $params['product_id'],
-                    'token' => $_SESSION['cart_token']
+                    'token' => $this->cartToken
                 ]
             );
             return $response;
@@ -208,7 +209,7 @@ Class Cart extends RentMy
                 ],
                 [
                     'coupon' => $params['coupon'],
-                    'token' => $_SESSION['cart_token']
+                    'token' => $this->cartToken
                 ]
             );
             return $response;
