@@ -42,7 +42,8 @@ class Products extends RentMy
                     'purchase_type' => !empty($params['purchase_type'])?$params['purchase_type']:'',
                     'all' => true,
                     'sort' => !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
+                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : '',
+                    'search' => !empty($params['search']) ? $params['search'] : ''
                 ]
             );
             return $response;
