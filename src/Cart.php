@@ -176,7 +176,7 @@ Class Cart extends RentMy
     function deleteCart($params)
     {
         try {
-            $response = self::fetch(
+            $response = self::httpPost(
                 '/carts/cart-remove-item',
                 [
                     'token' => $this->accessToken,
@@ -201,7 +201,7 @@ Class Cart extends RentMy
     function applyCoupon($params)
     {
         try {
-            $response = self::fetch(
+            $response = self::httpPost(
                 '/carts/apply-coupon',
                 [
                     'token' => $this->accessToken,
