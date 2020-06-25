@@ -32,6 +32,79 @@ class Checkout extends RentMy{
 
     }
 
+
+    /**
+     * get shipping methods
+     * @param $data
+     * @return mixed|string|null
+     */
+    function getShippingList($data)
+    {
+        unset($data['loc']);
+        $response = self::rentmy_fetch(
+            '/shipping/rate',
+            [
+                'token' => $this->accessToken,
+            ],
+            [
+                'address' => $data,
+                'pickup' => $this->locationId,
+                'token' => $_SESSION['rentmy_cart_token']
+            ]
+        );
+        if ($response['status'] == 'NOK') {
+            return $response;
+        }
+        if ($response['status'] == 'OK') {
+            $rentmy_config = new \RentMy\Config();
+            $store_content = $rentmy_config->store_contents();
+            $checkout_labels = $store_content[0]['contents']['checkout_info'];
+            //print_r("<pre>");print_r($GLOBALS['checkout_labels']);print_r("</pre>");
+            if (!empty($response['result'])) {
+                $fulfillment = [];
+                $i = 0;
+                $res = '';
+                $html_head = '<h4 class="shipping-choose-label">'.$checkout_labels['title_select_shipping_method']?? "Select Shipping Method".'</h4>';
+                foreach ($response['result'] as $key => $shippings) {
+
+                    if (strtolower($key) == 'standard') {
+                        $shipping_method = 6;
+                    } else {
+                        $shipping_method = 4;
+                    }
+
+//                    $shipping_method = $this->shipping_type[$shipping['response']['carrier_code']];
+
+                    foreach ($shippings as $shipping) {
+                        $html = '<label class="radio-container radiolist-container">';
+                        $json = json_encode($shipping);
+                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
+                        $html .= '<span class="rentmy-radio-date">Estimated Delivery Date: ' . date("F j, Y", strtotime($shipping['delivery_date'])) . '</span>';
+                        $html .= '<span class="rentmy-radio-day">  Delivery days: ' . $shipping['delivery_days'] . '</span>';
+                        $html .= '<span class="rentmy-radio-price">' . self::currency($shipping['charge']) . '</span>';
+                        $html .= '<span class="checkmark"></span></label>';
+
+                        $res .= $html;
+                        $fulfillment['data'][$i] = ['html' => $html, 'cost' => $shipping['charge']];
+                        $i++;
+                    }
+                }
+                $fulfillment['html'] = $html_head . $res;
+            }
+
+        } else {
+            $fulfillment = [];
+        }
+//        print_r( [
+//            'address' => $data,
+//            'pickup'=> 130,//get_option('rentmy_locationId'),
+//            'token' => 1571943865922 //$_COOKIE['rentmy_cart_token']
+//        ]);
+        return $fulfillment;
+    }
+
+
+
     // capture data from second step of checkout
     function saveFulfilment($params)
     {
