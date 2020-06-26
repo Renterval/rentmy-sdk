@@ -180,7 +180,7 @@ class Checkout extends RentMy{
             [
                 'address' => $data,
                 'pickup' => $this->locationId,
-                'token' => $_SESSION['rentmy_cart_token']
+                'token' => $_SESSION['cart_token']
             ]
         );
         if ($response['status'] == 'NOK') {
