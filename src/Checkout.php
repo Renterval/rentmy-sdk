@@ -314,7 +314,7 @@ class Checkout extends RentMy{
                 'type' => $payment['payment_gateway_type'],
                 'note' => $payment['note'],
                 'payment_gateway_name' => trim($payment['payment_gateway_name']),
-                'account' => $payment['card_no'],
+                'account' => isset($payment['card_no'])?$payment['card_no']:'',
             ];
             if (!empty($info['signature'])) {
                 $checkout_info['signature'] = trim($info['signature']);
