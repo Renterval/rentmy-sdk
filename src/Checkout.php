@@ -1,11 +1,12 @@
 <?php
+
 namespace RentMy;
 
 /**
-*Checkout Class
-**/
-
-class Checkout extends RentMy{
+ *Checkout Class
+ **/
+class Checkout extends RentMy
+{
 
     private $accessToken;
     private $locationId;
@@ -101,7 +102,7 @@ class Checkout extends RentMy{
     {
         try {
             $response = self::httpGet(
-                '/free-shipping/' . $_SESSION['cart_token'],
+                '/free-shipping/' . $_SESSION['RentMy']['cart_token'],
                 [
                     'token' => $this->accessToken,
                     'location' => $this->locationId,
@@ -164,65 +165,61 @@ class Checkout extends RentMy{
         }
     }
 
-    /**
-     * get shipping methods
-     * @param $data
-     * @return mixed|string|null
-     */
-    function getShippingList($data)
-    {
-        unset($data['loc']);
-        $response = self::httpPost(
-            '/shipping/rate',
-            [
-                'token' => $this->accessToken,
-            ],
-            [
-                'address' => $data,
-                'pickup' => $this->locationId,
-                'token' => $_SESSION['cart_token']
-            ]
-        );
-        if ($response['status'] == 'NOK') {
-            return $response;
-        }
-        if ($response['status'] == 'OK') {
-            if (!empty($response['result'])) {
-                $fulfillment = [];
-                $i = 0;
-                $res = '';
-                $html_head = '<h4 class="shipping-choose-label">Select Shipping Method</h4>';
-                foreach ($response['result'] as $key => $shippings) {
 
-                    if (strtolower($key) == 'standard') {
-                        $shipping_method = 6;
-                    } else {
-                        $shipping_method = 4;
-                    }
-
-                    foreach ($shippings as $shipping) {
-                        $html = '<label class="radio-container radiolist-container">';
-                        $json = json_encode($shipping);
-                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
-                        $html .= '<span class="rentmy-radio-date">Estimated Delivery Date: ' . date("F j, Y", strtotime($shipping['delivery_date'])) . '</span>';
-                        $html .= '<span class="rentmy-radio-day">  Delivery days: ' . $shipping['delivery_days'] . '</span>';
-                        $html .= '<span class="rentmy-radio-price">' . self::currency($shipping['charge']) . '</span>';
-                        $html .= '<span class="checkmark"></span></label>';
-
-                        $res .= $html;
-                        $fulfillment['data'][$i] = ['html' => $html, 'cost' => $shipping['charge']];
-                        $i++;
-                    }
-                }
-                $fulfillment['html'] = $html_head . $res;
-            }
-
-        } else {
-            $fulfillment = [];
-        }
-
-        return $fulfillment;
-    }
+//    function getShippingList($data)
+//    {
+//        unset($data['loc']);
+//        $response = self::httpPost(
+//            '/shipping/rate',
+//            [
+//                'token' => $this->accessToken,
+//            ],
+//            [
+//                'address' => $data,
+//                'pickup' => $this->locationId,
+//                'token' => $_SESSION['cart_token']
+//            ]
+//        );
+//        if ($response['status'] == 'NOK') {
+//            return $response;
+//        }
+//        if ($response['status'] == 'OK') {
+//            if (!empty($response['result'])) {
+//                $fulfillment = [];
+//                $i = 0;
+//                $res = '';
+//                $html_head = '<h4 class="shipping-choose-label">Select Shipping Method</h4>';
+//                foreach ($response['result'] as $key => $shippings) {
+//
+//                    if (strtolower($key) == 'standard') {
+//                        $shipping_method = 6;
+//                    } else {
+//                        $shipping_method = 4;
+//                    }
+//
+//                    foreach ($shippings as $shipping) {
+//                        $html = '<label class="radio-container radiolist-container">';
+//                        $json = json_encode($shipping);
+//                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
+//                        $html .= '<span class="rentmy-radio-date">Estimated Delivery Date: ' . date("F j, Y", strtotime($shipping['delivery_date'])) . '</span>';
+//                        $html .= '<span class="rentmy-radio-day">  Delivery days: ' . $shipping['delivery_days'] . '</span>';
+//                        $html .= '<span class="rentmy-radio-price">' . self::currency($shipping['charge']) . '</span>';
+//                        $html .= '<span class="checkmark"></span></label>';
+//
+//                        $res .= $html;
+//                        $fulfillment['data'][$i] = ['html' => $html, 'cost' => $shipping['charge']];
+//                        $i++;
+//                    }
+//                }
+//                $fulfillment['html'] = $html_head . $res;
+//            }
+//
+//        } else {
+//            $fulfillment = [];
+//        }
+//
+//        return $fulfillment;
+//    }
 
     /**
      * @param $data
@@ -278,46 +275,43 @@ class Checkout extends RentMy{
     {
 
         try {
-            $info = $_SESSION['checkout']['info'];
-            $fulfillment = $_SESSION['checkout']['fulfillment'];
-            $payment = $data;
-            $cartToken = $_SESSION['cart_token'];
+            $cartToken = $_SESSION['RentMy']['cart_token'];
             if (empty($cartToken)) {
                 return ['status' => 'NOK', 'message' => 'Invalid cart.'];
             }
             $checkout_info = [
-                'first_name' => $info['first_name'],
-                'last_name' => $info['last_name'],
-                'mobile' => $info['mobile'],
-                'email' => $info['email'],
-                'address_line1' => $info['address_line1'],
-                'address2' => $info['address_line2'],
-                'city' => $info['city'],
-                'state' => $info['state'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'mobile' => $data['mobile'],
+                'email' => $data['email'],
+                'address_line1' => $data['address_line1'],
+                'address2' => $data['address_line2'],
+                'city' => $data['city'],
+                'state' => $data['state'],
                 'combinedAddress' => "",
-                'country' => 'us',
-                'zipcode' => $info['zipcode'],
+                'country' => $data['country'],
+                'zipcode' => $data['zipcode'],
                 'custom_values' => null,
-                'special_instructions' => isset($info['special_instructions'])?$info['special_instructions']:'',
-                'special_requests' => isset($info['special_requests'])?$info['special_requests']:'',
-                'driving_license' => isset($info['driving_license'])?$info['driving_license']:'',
+                'special_instructions' => isset($data['special_instructions']) ? $data['special_instructions'] : '',
+                'special_requests' => isset($data['special_requests']) ? $data['special_requests'] : '',
+                'driving_license' => isset($data['driving_license']) ? $data['driving_license'] : '',
                 'fieldSelection' => null,
                 'fieldText' => null,
                 'pickup' => 130,
-                'delivery' => $fulfillment['delivery'],
-                'shipping_method' => $fulfillment['shipping_method'],
+                'delivery' => $data['delivery'],
+                'shipping_method' => $data['shipping_method'],
                 'currency' => 'USD',
                 'token' => $cartToken,
                 'custom_values' => null,
                 'signature' => null,
-                'gateway_id' => $payment['payment_gateway_id'],
-                'type' => $payment['payment_gateway_type'],
-                'note' => $payment['note'],
-                'payment_gateway_name' => trim($payment['payment_gateway_name']),
-                'account' => isset($payment['card_no'])?$payment['card_no']:'',
+                'gateway_id' => $data['gateway_id'],
+                'type' => $data['type'],
+                'note' => $data['note'],
+                'payment_gateway_name' => trim($data['payment_gateway_name']),
+                'account' => isset($data['account']) ? $data['account'] : '',
             ];
             if (!empty($info['signature'])) {
-                $checkout_info['signature'] = trim($info['signature']);
+                $checkout_info['signature'] = trim($data['signature']);
             }
             if ($fulfillment['delivery']['type'] == 'shipping') {
                 $checkout_info['shipping_address1'] = $fulfillment['shipping_address1'];
@@ -332,7 +326,7 @@ class Checkout extends RentMy{
                 $checkout_info['shipping_zipcode'] = $fulfillment['shipping_zipcode'];
             }
             if ($checkout_info['payment_gateway_name'] != 'Stripe' && $checkout_info['type'] == 1) {
-                $checkout_info["expiry"] = $payment['exp_month'] . $payment['exp_year'];
+                $checkout_info["expiry"] = $data['exp_month'] . $data['exp_year'];
                 $checkout_info['cvv2'] = $payment['cvv'];
             }
 
@@ -368,10 +362,9 @@ class Checkout extends RentMy{
                 return ['status' => 'NOK', 'message' => "Order can't be created . Some products may not available . Please try again . "];
             }
 
-            $_SESSION['order_uid'] = $response['result']['data']['order']['data']['uid'];
+            $_SESSION['RentMy']['order_uid'] = $response['result']['data']['order']['data']['uid'];
             // delete session && cookie
-            unset($_SESSION['cart_token']);
-            unset($_SESSION['checkout']);
+            unset($_SESSION['RentMy']['cart_token']);
             return ['status' => 'OK', 'uid' => $_SESSION['order_uid']];
         } catch (Exception $e) {
 
@@ -398,5 +391,69 @@ class Checkout extends RentMy{
         } else {
             return $_SESSION['checkout'][$type];
         }
+    }
+
+    /**
+     * get shipping methods
+     * @param $data
+     * @return mixed|string|null
+     */
+    function getShippingList($data)
+    {
+        unset($data['loc']);
+        $response = self::httpPost(
+            '/shipping/rate',
+            [
+                'token' => $this->accessToken,
+            ],
+            [
+                'address' => $data,
+                'pickup' => $this->locationId,
+                'token' => $_SESSION['RentMy']['cart_token']
+            ]
+        );
+        if ($response['status'] == 'NOK') {
+            return $response;
+        }
+        if ($response['status'] == 'OK') {
+            if (!empty($response['result'])) {
+                $fulfillment = [];
+                $i = 0;
+                $res = '';
+                $html_head = '<h4 class="shipping-choose-label">Select Shipping Method</h4>';
+                foreach ($response['result'] as $key => $shippings) {
+                    if (strtolower($key) == 'standard') {
+                        $shipping_method = 6;
+                    } else {
+                        $shipping_method = 4;
+                    }
+                    if (strtolower($key) == 'flat') {
+                        $html = '<label class="radio-container radiolist-container">';
+                        $json = json_encode($shippings);
+                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shippings['charge'] . "'data-tax='0' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shippings['carrier_code'] . "</span>";
+                        $html .= '<span class="rentmy-radio-price pull-right">' . self::currency($shippings['charge']) . '</span>';
+                        $html .= '<span class="checkmark"></span></label>';
+                        $res .= $html;
+                    } else {
+                        foreach ($shippings as $shipping) {
+                            $html = '<label class="radio-container radiolist-container">';
+                            $json = json_encode($shipping);
+                            $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
+                            $html .= '<span class="rentmy-radio-date">Estimated Delivery Date: ' . date("F j, Y", strtotime($shipping['delivery_date'])) . '</span>';
+                            $html .= '<span class="rentmy-radio-day">  Delivery days: ' . $shipping['delivery_days'] . '</span>';
+                            $html .= '<span class="rentmy-radio-price">' . self::currency($shipping['charge']) . '</span>';
+                            $html .= '<span class="checkmark"></span></label>';
+                            $res .= $html;
+                            $fulfillment['data'][$i] = ['html' => $html, 'cost' => $shipping['charge']];
+                            $i++;
+                        }
+                    }
+                }
+                $fulfillment['html'] = $html_head . $res;
+            }
+        } else {
+            $fulfillment = [];
+        }
+        return $fulfillment;
     }
 }

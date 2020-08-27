@@ -401,7 +401,49 @@ class Products extends RentMy
         }
     }
 
+    /**
+     * @param $data
+     * @return mixed|string
+     */
+    function get_pacakge_info_by_variant($data){
+        $param_add = '';
+        $param_add = '?start_date='. $data['start_date'] . '&end_date='.$data['end_date'] . '&location='. $this->locationId;
+        foreach($data['variants'] as $variant){
+            $param_add .= '&variants[]='. $variant;
+        }
+        $response = self::httpGet(
+            '/package/'.$data['pacakge_uid'].'/term/360'.$param_add,
+            [
+                'token' => $this->accessToken
+            ],
+            null
+        );
+        return $response;
+    }
+    /** Check package and item available with price returned
+     * @param $data
+     * @return mixed
+     */
+    function get_package_value($data)
+    {
+        try {
 
+            $params = $data;
+            $params['location'] = $this->locationId;
+            $response = self::httpPost(
+                '/get-package-price',
+                [
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
+                ],
+                $params
+            );
+            return $response;
+        } catch (Exception $e) {
+
+        }
+
+    }
 }
 
 ?>

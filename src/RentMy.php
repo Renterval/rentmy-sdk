@@ -5,14 +5,14 @@ namespace RentMy;
 class RentMy
 {
     public static $apiUrl = 'http://client-api-stage.rentmy.leaperdev.rocks/api';
-
     public static $S3URL = 'https://s3.us-east-2.amazonaws.com/pimg.rentmy.co/products/';
+    
 
     public function __construct()
     {
     }
 
-    public static function httpGet($slashedPath = null, $token = null, $queryParams = [])
+    public static function httpGet($slashedPath = null, $token =null, $queryParams = [])
     {
         // Create a new cURL resource
         $curl = curl_init();
@@ -94,7 +94,7 @@ class RentMy
 
     }
 
-    public static function httpPost($slashedPath = null, $token = null, $postFields = [])
+    public static function httpPost($slashedPath = null, $token = [], $postFields = [])
     {
         // Create a new cURL resource
         $curl = curl_init();
@@ -304,7 +304,7 @@ class RentMy
 
     public static function currency($amount = 0, $pre_class = 'pre', $amount_class = 'amount', $post_class = 'post')
     {
-        $config = $_SESSION['config'];
+        $config = $_SESSION['RentMy']['config'];
         $currency = !empty($config['currency_format']) ? $config['currency_format'] : '';
         if (empty($amount)) {
             $amount = 0;
@@ -324,7 +324,46 @@ class RentMy
         }
         return $html;
     }
+    public static function getRentalTypes($prices)
+    {
+        if (empty($prices)) {
+            return false;
+        }
+        $types = [];
+        foreach ($prices as $price) {
+            foreach ($price as $k => $p) {
+                if ($k == 'rent' || $k == 'hourly' || $k == 'daily' || $k == 'weekly' || $k == 'monthly' || $k == 'fixed') {
+                    $types[] = 'rent';
+                } else {
+                    if (!empty($p['price'])) {
+                        $types[] = $k;
+                    }
+                }
 
+            }
+        }
+        return array_unique($types);
+    }
+
+    public static function getPrices($prices)
+    {
+        $formatPrice = [];
+        $formatPrice['rent'] = [];
+        foreach ($prices as $price) {
+            foreach ($price as $k => $p) {
+                if ($k == 'base') {
+                    $formatPrice['base'] = $p;
+                } elseif ($k == 'fixed') {
+                    $formatPrice['rent'][] = $p;
+                } else {
+                    foreach ($p as $i => $j) {
+                        $formatPrice['rent'][] = $j;
+                    }
+                }
+            }
+        }
+        return $formatPrice;
+    }
 }
 
 ?>

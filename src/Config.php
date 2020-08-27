@@ -1,7 +1,9 @@
 <?php
+
 namespace RentMy;
 
-class Config extends RentMy{
+class Config extends RentMy
+{
 
     private $accessToken;
     private $locationId;
@@ -65,14 +67,14 @@ class Config extends RentMy{
     public function store_config()
     {
         try {
-            if (empty($_SESSION['config'])) {
+            if (empty($_SESSION['RentMy']['config'])) {
                 $response = self::httpGet(
                     '/settings?type=store_config',
                     $this->accessToken
                 );
-                $_SESSION['config'] = $response['result']['data']['config'];
+                $_SESSION['RentMy']['config'] = $response['result']['data']['config'];
             }
-            return  $_SESSION['config'];
+            return $_SESSION['RentMy']['config'];
 
         } catch (Exception $e) {
 
@@ -115,7 +117,7 @@ class Config extends RentMy{
     }
 
     // get delivery settings
-   public function getDeliverySettings()
+    public function getDeliverySettings()
     {
         try {
             $response = self::httpGet(
@@ -158,5 +160,18 @@ class Config extends RentMy{
         );
         return $response['result'];
 
+    }
+
+    // get states
+    public function statesByCountry($country_id)
+    {
+        try {
+            $response = self::httpGet(
+                '/state-by-country/' . $country_id,
+                $this->accessToken
+            );
+            return $response['result']['data'];
+        } catch (Exception $e) {
+        }
     }
 }
