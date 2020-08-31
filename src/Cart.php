@@ -192,6 +192,10 @@ Class Cart extends RentMy
                     'token' => $this->cartToken
                 ]
             );
+            if(empty($response['result']['data']['cart_items'])){
+                unset($_SESSION['RentMy']['rent_start']);
+                unset($_SESSION['RentMy']['rent_end']);
+            }
             return $response;
         } catch (Exception $e) {
 

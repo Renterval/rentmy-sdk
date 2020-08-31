@@ -424,21 +424,31 @@ class Checkout extends RentMy
                 foreach ($response['result'] as $key => $shippings) {
                     if (strtolower($key) == 'standard') {
                         $shipping_method = 6;
+                    }
+                    if (strtolower($key) == 'flat') {
+                        $shipping_method = 7;
                     } else {
                         $shipping_method = 4;
                     }
-                    if (strtolower($key) == 'flat') {
+                    if (strtolower($key) == 'standard') {
                         $html = '<label class="radio-container radiolist-container">';
                         $json = json_encode($shippings);
-                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shippings['charge'] . "'data-tax='0' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shippings['carrier_code'] . "</span>";
+                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shippings['charge'] . "'data-tax='0' name='selected_shipping_data' value='" . $json . "'/>&nbsp;<span class='rm-shipping-text'>" . $shippings['carrier_code'] . "</span>";
                         $html .= '<span class="rentmy-radio-price pull-right">' . self::currency($shippings['charge']) . '</span>';
                         $html .= '<span class="checkmark"></span></label>';
+                        $res .= $html;
+                    } elseif (strtolower($key) == 'flat') {
+                        $html = '<label class="radio-container radiolist-container">';
+                        $json = json_encode($shippings);
+                        $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shippings['charge'] . "'data-tax='0' name='selected_shipping_data' value='" . $json . "'/>&nbsp;<span class='rentmy-radio-text'>" . $shippings['carrier_code'] . "</span>";
+                        $html .= '<span class="rentmy-radio-price pull-right">' . self::currency($shippings['charge']) . '</span>';
+                        $html .= '<span class="checkmark"></span></label></div>';
                         $res .= $html;
                     } else {
                         foreach ($shippings as $shipping) {
                             $html = '<label class="radio-container radiolist-container">';
                             $json = json_encode($shipping);
-                            $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='shipping_method' value='" . $json . "'><span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
+                            $html .= "<input type='radio' data-type='" . $shipping_method . "'   data-amount='" . $shipping['charge'] . "' data-tax='" . $shipping['tax'] . "' name='selected_shipping_data' value='" . $json . "'/>&nbsp;<span class='rentmy-radio-text'>" . $shipping['service_name'] . "</span>";
                             $html .= '<span class="rentmy-radio-date">Estimated Delivery Date: ' . date("F j, Y", strtotime($shipping['delivery_date'])) . '</span>';
                             $html .= '<span class="rentmy-radio-day">  Delivery days: ' . $shipping['delivery_days'] . '</span>';
                             $html .= '<span class="rentmy-radio-price">' . self::currency($shipping['charge']) . '</span>';

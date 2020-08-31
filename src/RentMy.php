@@ -4,8 +4,8 @@ namespace RentMy;
 
 class RentMy
 {
-    public static $apiUrl = 'http://client-api-stage.rentmy.leaperdev.rocks/api';
-    public static $S3URL = 'https://s3.us-east-2.amazonaws.com/pimg.rentmy.co/products/';
+    public static $apiUrl = 'https://clientapi.rentmy.co/api';
+    public static $S3URL = 'https://s3.us-east-2.amazonaws.com/images.rentmy.co/products/';
     
 
     public function __construct()

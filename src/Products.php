@@ -122,12 +122,11 @@ class Products extends RentMy
     {
         try {
 
-            if (!empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date'])) {
-                $add_params = '&token=' . $cart_params['token'] . '&start_date=' . urlencode($cart_params['start_date']) . '&end_date=' . urlencode($cart_params['end_date']);
+            if (!empty($_SESSION['RentMy']['cart_token']) && !empty($_SESSION['RentMy']['rent_start']) && !empty($_SESSION['RentMy']['rent_end'])) {
+                $add_params = '&token=' . $_SESSION['RentMy']['cart_token'] . '&start_date=' . urlencode($_SESSION['RentMy']['rent_start']) . '&end_date=' . urlencode($_SESSION['RentMy']['rent_end']);
             } else {
                 $add_params = '';
             }
-
             $location_id = $this->locationId;
             $response = self::httpGet(
                 '/products/' . $product_id . '?location=' . $location_id . $add_params,
