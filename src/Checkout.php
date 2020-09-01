@@ -48,7 +48,7 @@ class Checkout extends RentMy
             $data['shipping_method'] = 1;
             self::setCheckoutSession('fulfillment', $data);
         } elseif ($params['type'] == 'delivery') {
-            $data['shipping_method'] = 1;
+            $data['shipping_method'] = 2;
             $data['delivery'] = $params;
             self::setCheckoutSession('fulfillment', $data);
         } elseif ($params['type'] == 'shipping') {
@@ -248,7 +248,7 @@ class Checkout extends RentMy
     function addShippingToCarts($params)
     {
         try {
-            if (!empty($_SESSION['cart_token'])) {
+            if (!empty($_SESSION['RentMy']['cart_token'])) {
                 $response = self::httpPost(
                     '/carts/delivery',
                     [
@@ -258,7 +258,7 @@ class Checkout extends RentMy
                         'shipping_cost' => $params['shipping_cost'],
                         'shipping_method' => $params['shipping_method'],
                         'tax' => $params['tax'],
-                        'token' => $_SESSION['cart_token'],
+                        'token' => $_SESSION['RentMy']['cart_token'],
                     ]
                 );
                 return $response;
@@ -288,7 +288,6 @@ class Checkout extends RentMy
                 'address2' => $data['address_line2'],
                 'city' => $data['city'],
                 'state' => $data['state'],
-                'combinedAddress' => "",
                 'country' => $data['country'],
                 'zipcode' => $data['zipcode'],
                 'custom_values' => null,
@@ -297,7 +296,7 @@ class Checkout extends RentMy
                 'driving_license' => isset($data['driving_license']) ? $data['driving_license'] : '',
                 'fieldSelection' => null,
                 'fieldText' => null,
-                'pickup' => 130,
+                'pickup' => '',
                 'delivery' => $data['delivery'],
                 'shipping_method' => $data['shipping_method'],
                 'currency' => 'USD',
@@ -313,17 +312,17 @@ class Checkout extends RentMy
             if (!empty($info['signature'])) {
                 $checkout_info['signature'] = trim($data['signature']);
             }
-            if ($fulfillment['delivery']['type'] == 'shipping') {
-                $checkout_info['shipping_address1'] = $fulfillment['shipping_address1'];
-                $checkout_info['shipping_address2'] = $fulfillment['shipping_address2'];
-                $checkout_info['shipping_city'] = $fulfillment['shipping_city'];
-                $checkout_info['shipping_country'] = $fulfillment['shipping_country'];
-                $checkout_info['shipping_email'] = $info['email'];
-                $checkout_info['shipping_first_name'] = $info['first_name'];
-                $checkout_info['shipping_last_name'] = $info['last_name'];
-                $checkout_info['shipping_mobile'] = $info['mobile'];
-                $checkout_info['shipping_state'] = $fulfillment['shipping_state'];
-                $checkout_info['shipping_zipcode'] = $fulfillment['shipping_zipcode'];
+            if ($data['shipping_method'] != 1) {
+                $checkout_info['shipping_address1'] = $data['shipping_address1'];
+                $checkout_info['shipping_address2'] = $data['shipping_address2'];
+                $checkout_info['shipping_city'] = $data['shipping_city'];
+                $checkout_info['shipping_country'] = $data['shipping_country'];
+                $checkout_info['shipping_email'] = $data['email'];
+                $checkout_info['shipping_first_name'] = $data['first_name'];
+                $checkout_info['shipping_last_name'] = $data['last_name'];
+                $checkout_info['shipping_mobile'] = $data['mobile'];
+                $checkout_info['shipping_state'] = $data['shipping_state'];
+                $checkout_info['shipping_zipcode'] = $data['shipping_zipcode'];
             }
             if ($checkout_info['payment_gateway_name'] != 'Stripe' && $checkout_info['type'] == 1) {
                 $checkout_info["expiry"] = $data['exp_month'] . $data['exp_year'];
@@ -337,7 +336,7 @@ class Checkout extends RentMy
 
             // added for partial payments
             if (!empty($payment['payment_amount'])) {
-                $checkout_info['payment_amount'] = $payment['payment_amount'];
+                $checkout_info['payment_amount'] = $data['payment_amount'];
                 $checkout_info['amount_tendered'] = 0;
             }
             // partial payment ends
@@ -350,7 +349,6 @@ class Checkout extends RentMy
                 ],
                 $checkout_info
             );
-
             if (!$response['result']['data']['payment']['success']) {
                 if (empty($response['result']['data']['payment']['message'])) {
                     $message = "Payment not completed successfully . Order can't be created. Please try again.";
@@ -424,12 +422,12 @@ class Checkout extends RentMy
                 foreach ($response['result'] as $key => $shippings) {
                     if (strtolower($key) == 'standard') {
                         $shipping_method = 6;
-                    }
-                    if (strtolower($key) == 'flat') {
+                    } else if (strtolower($key) == 'flat') {
                         $shipping_method = 7;
                     } else {
                         $shipping_method = 4;
                     }
+
                     if (strtolower($key) == 'standard') {
                         $html = '<label class="radio-container radiolist-container">';
                         $json = json_encode($shippings);
