@@ -363,6 +363,8 @@ class Checkout extends RentMy
             $_SESSION['RentMy']['order_uid'] = $response['result']['data']['order']['data']['uid'];
             // delete session && cookie
             unset($_SESSION['RentMy']['cart_token']);
+            unset($_SESSION['RentMy']['rent_start']);
+            unset($_SESSION['RentMy']['rent_end']);
             return ['status' => 'OK', 'uid' => $_SESSION['order_uid']];
         } catch (Exception $e) {
 
