@@ -40,11 +40,11 @@ class Order extends RentMy
      * List all the active additional services for any store
      * @return mixed|string
      */
-    function getAdditionalServices()
+    function getAdditionalServices($cartToken = '')
     {
         try {
             $response = self::httpGet(
-                '/settings/orders/additional-charges',
+                '/settings/orders/additional-charges?type=active&cart_token=' . $cartToken,
                 [
                     'token' => $this->accessToken,
                 ]
@@ -60,26 +60,38 @@ class Order extends RentMy
      * selected addional services.
      * Sample data
      * {
-     * "token": "1605679756129",
-     * "additional_charges": [
-     *  {
-     *      "id": 1,
-     *      "value": null,
-     *      "is_selected": false
-     *  },
-     *  {
-     *      "id": 2,
-     *      "value": 2.99,
-     *      "is_selected": true
-     *  }
-     * ]
+     *
+     *   "cart_token": "1606201026285",
+     *   "additional_charges": [
+     *      {
+     *          "id": 11,
+     *          "value": null,
+     *          "is_selected": false,
+     *          "order_additional_charge_id": null,
+     *          "selected_option": null
+     *      },
+     *      {
+     *          "id": 16,
+     *          "value": 2,
+     *          "is_selected": true,
+     *          "order_additional_charge_id": 266,
+     *          "selected_option": "Optional value"
+     *      },
+     *      {
+     *           "id": 12,
+     *          "value": 35,
+     *          "is_selected": true,
+     *          "order_additional_charge_id": null,
+     *          "selected_option": null
+     *      }
+     *      ]
      * }
      */
     function addServicesWithCartTotal($data)
     {
         try {
             $response = self::httpPost(
-                '/orders/additional-charges',
+                '/orders/additional-charges/create',
                 [
                     'token' => $this->accessToken,
                 ],
@@ -92,19 +104,31 @@ class Order extends RentMy
     }
 
     /**
-     * This function will return all the added additional servicess with any order
+     * This function will return all the added additional servicess with any order or cart
+     * when type = 'cart' then type_id should be cart id  - this will be used before creating order for listing added services in cart
+     * where type = 'order' then type_id should be order id - this will be used for showing added services for any order after creating order
      * @param $order_id
      * @return mixed|string
      */
-    function getOrderAdditionalServices($order_id)
+    function getOrderAdditionalServices($type, $type_id)
     {
         try {
-            $response = self::httpGet(
-                '/orders/view-charges/' . $order_id . '?type=order',
-                [
-                    'token' => $this->accessToken,
-                ]
-            );
+            if ($type == 'cart') {
+                $response = self::httpGet(
+                    '/cart/view-charges/' . $type_id,
+                    [
+                        'token' => $this->accessToken,
+                    ]
+                );
+            } else {
+                $response = self::httpGet(
+                    '/orders/view-charges/' . $type_id . '?type=' . $type,
+                    [
+                        'token' => $this->accessToken,
+                    ]
+                );
+            }
+
             return $response;
         } catch (Exception $e) {
 
