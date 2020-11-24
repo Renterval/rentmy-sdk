@@ -115,7 +115,7 @@ class Order extends RentMy
         try {
             if ($type == 'cart') {
                 $response = self::httpGet(
-                    '/cart/view-charges/' . $type_id,
+                    '/carts/view-charges/' . $type_id,
                     [
                         'token' => $this->accessToken,
                     ]
