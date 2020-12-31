@@ -44,6 +44,36 @@ Class Cart extends RentMy
 
         }
     }
+
+    /**
+     * @param $params
+     * @return array|mixed|string
+     */
+    function addToCartWithoutDate($params)
+    {
+        try {
+            $params['location'] = $this->locationId;
+            $params['token'] = $this->cartToken;
+            $response = self::httpPost(
+                '/v2/carts/add',
+                $this->accessToken,
+                $params
+            );
+
+            if ($response['status'] == 'OK') {
+                if (!empty($response['result']['data']['token'])) {
+                    self::setCartToken($response['result']['data']['token']);
+                    return $response;
+                }else{
+                    return ['status'=> 'NOK','result'=> $response['result']];
+                }
+            }
+
+            return $response;
+        } catch (Exception $e) {
+
+        }
+    }
     /**
      * Package add to cart .
      * @return mixed|string|null
