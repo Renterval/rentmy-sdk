@@ -46,6 +46,7 @@ Class Cart extends RentMy
     }
 
     /**
+     * Rental add to cart when date is missing
      * @param $params
      * @return array|mixed|string
      */
