@@ -38,6 +38,23 @@ Class RentMyToken extends RentMy
 
         }
     }
+    /**
+     * Get Store token when store name from url
+     * @param $type
+     * @return mixed
+     */
+    public function getTokenFromStoreName($name)
+    {
+        try {
+            $response = self::httpGet(
+                '/get-settings?store_name=' . $name,
+                $this->accessToken
+            );
+            return $response['result'];
+        } catch (Exception $e) {
+
+        }
+    }
 
 }
 
