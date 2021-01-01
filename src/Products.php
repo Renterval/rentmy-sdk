@@ -216,12 +216,12 @@ class Products extends RentMy
                 rtrim($get_fields_string, '&');
                 $get_fields_string = '?' . $get_fields_string;
             }
-            $response = self::httpPost(
+            $response = self::httpGet(
                 'products/availability' . $get_fields_string ,
                 [
                     'token' => $this->accessToken,
-                ],
-                $params
+                ]
+
             );
             return $response;
         } catch (Exception $e) {
