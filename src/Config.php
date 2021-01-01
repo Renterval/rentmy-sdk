@@ -174,4 +174,19 @@ class Config extends RentMy
         } catch (Exception $e) {
         }
     }
+
+    /**
+     * Get navigation
+     * @return mixed
+     */
+    function navigations(){
+        try {
+            $response = self::httpGet(
+                '/navigations',
+                $this->accessToken
+            );
+            return $response['result']['data'];
+        } catch (Exception $e) {
+        }
+    }
 }
