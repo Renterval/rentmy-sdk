@@ -200,6 +200,35 @@ class Products extends RentMy
         }
 
     }
+    /** Check package availability
+     * for cart - type = cart & token = cart token
+     * @param $data
+     * @return mixed
+     */
+    function getAvailability($params)
+    {
+        try {
+            $get_fields_string = '';
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $get_fields_string .= $key . '=' . $value . '&';
+                }
+                rtrim($get_fields_string, '&');
+                $get_fields_string = '?' . $get_fields_string;
+            }
+            $response = self::httpPost(
+                'products/availability' . $get_fields_string ,
+                [
+                    'token' => $this->accessToken,
+                ],
+                $params
+            );
+            return $response;
+        } catch (Exception $e) {
+
+        }
+
+    }
 
     /**
      * @param $data ['product_id']
