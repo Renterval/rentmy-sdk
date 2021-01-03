@@ -47,8 +47,7 @@ Class RentMyToken extends RentMy
     {
         try {
             $response = self::httpGet(
-                '/get-settings?store_name=' . $name,
-                $this->accessToken
+                '/get-settings?store_name=' . $name
             );
             return $response['result'];
         } catch (Exception $e) {
