@@ -279,7 +279,7 @@ Class Cart extends RentMy
     /** Get Cart details from session */
     function getCartSession()
     {
-        return $_SESSION['RentMy']['cart'];
+        return $_SESSION['RentMy']['cart'] ?? '';
     }
 
     // set rent start date
