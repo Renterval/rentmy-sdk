@@ -1,18 +1,22 @@
 <?php
+
 namespace RentMy;
 /**
  * Class Cart
  */
-Class Cart extends RentMy
+class Cart extends RentMy
 {
     private $locationId;
     private $cartToken;
     private $accessToken;
-    function __construct($accessToken, $locationId){
+
+    function __construct($accessToken, $locationId)
+    {
         $this->locationId = $locationId;
         $this->accessToken = $accessToken;
-        $this->cartToken = !empty($_SESSION['RentMy']['cart_token'])? $_SESSION['RentMy']['cart_token']:'';
+        $this->cartToken = !empty($_SESSION['RentMy']['cart_token']) ? $_SESSION['RentMy']['cart_token'] : '';
     }
+
     /**
      * submit cart using these method
      * @return mixed|string|null
@@ -27,15 +31,15 @@ Class Cart extends RentMy
                 $this->accessToken,
                 $params
             );
-            
+
             if ($response['status'] == 'OK') {
                 if (!empty($response['result']['data']['token'])) {
                     self::setCartToken($response['result']['data']['token']);
                     self::setRentStart($response['result']['data']['rent_start']);
                     self::setRentEnd($response['result']['data']['rent_end']);
                     return $response;
-                }else{
-                    return ['status'=> 'NOK','result'=> $response['result']];
+                } else {
+                    return ['status' => 'NOK', 'result' => $response['result']];
                 }
             }
 
@@ -65,8 +69,8 @@ Class Cart extends RentMy
                 if (!empty($response['result']['data']['token'])) {
                     self::setCartToken($response['result']['data']['token']);
                     return $response;
-                }else{
-                    return ['status'=> 'NOK','result'=> $response['result']];
+                } else {
+                    return ['status' => 'NOK', 'result' => $response['result']];
                 }
             }
 
@@ -75,6 +79,7 @@ Class Cart extends RentMy
 
         }
     }
+
     /**
      * Package add to cart .
      * @return mixed|string|null
@@ -87,20 +92,20 @@ Class Cart extends RentMy
             $response = self::httpPost(
                 '/package/add-to-cart',
                 [
-                    'token'=>$this->accessToken,
-                    'location' => $location_id
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
                 ],
                 $params
             );
-            
+
             if ($response['status'] == 'OK') {
                 if (!empty($response['result']['data']['token'])) {
                     self::setCartToken($response['result']['data']['token']);
                     self::setRentStart($response['result']['data']['rent_start']);
                     self::setRentEnd($response['result']['data']['rent_end']);
                     return $response;
-                }else{
-                    return ['status'=> 'NOK','result'=> $response['result']];
+                } else {
+                    return ['status' => 'NOK', 'result' => $response['result']];
                 }
             }
 
@@ -137,7 +142,7 @@ Class Cart extends RentMy
         try {
             $location_id = $this->locationId;
             $response = self::httpPost(
-                '/products/'.$token.'/user/related-products?source=cart',
+                '/products/' . $token . '/user/related-products?source=cart',
                 [
                     'token' => $this->accessToken,
                     'location' => $location_id
@@ -223,7 +228,7 @@ Class Cart extends RentMy
                     'token' => $this->cartToken
                 ]
             );
-            if(empty($response['result']['data']['cart_items'])){
+            if (empty($response['result']['data']['cart_items'])) {
                 unset($_SESSION['RentMy']['rent_start']);
                 unset($_SESSION['RentMy']['rent_end']);
             }
@@ -256,12 +261,13 @@ Class Cart extends RentMy
 
         }
     }
+
     /**
      * Get cart Token from session
      */
     function getCartToken()
     {
-        return $_SESSION['RentMy']['cart_token'];
+        return $_SESSION['RentMy']['cart_token'] ?? null;
     }
 
     /** Set cart token to Session */
@@ -283,23 +289,27 @@ Class Cart extends RentMy
     }
 
     // set rent start date
-    function setRentStart($date){
+    function setRentStart($date)
+    {
         $_SESSION['RentMy']['rent_start'] = $date;
     }
 
     // set rent end date
-    function setRentEnd($date){
+    function setRentEnd($date)
+    {
         $_SESSION['RentMy']['rent_end'] = $date;
     }
 
     // get rent start date
-    function getRentStart(){
-        return $_SESSION['RentMy']['rent_start'];
+    function getRentStart()
+    {
+        return $_SESSION['RentMy']['rent_start'] ?? null;
     }
 
     // get rent end date
-    function getRentEnd(){
-        return $_SESSION['RentMy']['rent_end'];
+    function getRentEnd()
+    {
+        return $_SESSION['RentMy']['rent_end'] ?? null;
     }
 
 }
