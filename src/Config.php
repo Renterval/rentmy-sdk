@@ -189,4 +189,18 @@ class Config extends RentMy
         } catch (Exception $e) {
         }
     }
+    /**
+     * Get payment configuration
+     * @return mixed
+     */
+    public function partialPaymentConfig(){
+        try {
+            $response = self::httpGet(
+                '/store-config/payments',
+                $this->accessToken
+            );
+            return $response['result']['data'];
+        } catch (Exception $e) {
+        }
+    }
 }
