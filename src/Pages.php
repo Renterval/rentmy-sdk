@@ -36,5 +36,31 @@ Class Pages extends RentMy
 
     }
 
+    /**
+     * Send contact us data
+     * @param $data
+     * @return array|string[]
+     */
+    function sendEmailFromContact($data)
+    {
+        try {
+            $response = self::httpPost(
+                '/contactus',
+                [
+                    'token' => $this->accessToken,
+                ],
+                $data
+            );
+
+            if (isset($response['result']['message'])) {
+                $message = $response['result']['message'];
+                return ['status' => 'NOK', 'message' => $message];
+            } else {
+                return ['status' => 'OK'];
+            }
+        } catch (Exception $e) {
+
+        }
+    }
 
 }
