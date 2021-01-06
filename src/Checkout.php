@@ -273,7 +273,6 @@ class Checkout extends RentMy
     // finally do the checkout process
     function doCheckout($data)
     {
-
         try {
             $cartToken = $_SESSION['RentMy']['cart_token'];
             if (empty($cartToken)) {
@@ -328,19 +327,15 @@ class Checkout extends RentMy
                 $checkout_info["expiry"] = $data['exp_month'] . $data['exp_year'];
                 $checkout_info['cvv2'] = $payment['cvv'];
             }
-
             if (!empty($data['custom_values'])) {
                 $checkout_info['custom_values'] = $data['custom_values'];
             }
-
-
             // added for partial payments
             if (!empty($payment['payment_amount'])) {
                 $checkout_info['payment_amount'] = $data['payment_amount'];
                 $checkout_info['amount_tendered'] = 0;
             }
             // partial payment ends
-
             $response = self::httpPost(
                 '/orders/online',
                 [
@@ -359,15 +354,13 @@ class Checkout extends RentMy
             } else if (!$response['result']['data']['availability']['success']) {
                 return ['status' => 'NOK', 'message' => "Order can't be created . Some products may not available . Please try again . "];
             }
-
             $_SESSION['RentMy']['order_uid'] = $response['result']['data']['order']['data']['uid'];
             // delete session && cookie
             unset($_SESSION['RentMy']['cart_token']);
             unset($_SESSION['RentMy']['rent_start']);
             unset($_SESSION['RentMy']['rent_end']);
-            return ['status' => 'OK', 'uid' => $_SESSION['order_uid']];
+            return ['status' => 'OK', 'uid' => $_SESSION['RentMy']['order_uid']];
         } catch (Exception $e) {
-
         }
     }
 

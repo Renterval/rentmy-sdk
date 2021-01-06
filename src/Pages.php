@@ -1,10 +1,11 @@
 <?php
+
 namespace RentMy;
 /**
  * Class RentMy_Pages
  * This is for About Us, Contact Us, and other custom pages API
  */
-Class Pages extends RentMy
+class Pages extends RentMy
 {
 
     private $accessToken;
@@ -15,6 +16,7 @@ Class Pages extends RentMy
         $this->accessToken = $accessToken;
         $this->locationId = $locationId;
     }
+
     /**
      * Get about us page information
      * @return mixed|string|null
@@ -63,4 +65,44 @@ Class Pages extends RentMy
         }
     }
 
+    /**
+     * Get contact us page information
+     * @return mixed|string|null
+     */
+    function contactUs()
+    {
+        try {
+            $response = self::httpGet(
+                '/pages/contact',
+                [
+                    'token' => $this->accessToken,
+                ]
+            );
+
+            return !empty($response['result']['data']) ? $response['result']['data'] : null;
+        } catch (Exception $e) {
+
+        }
+    }
+
+    /**
+     * Get custom page
+     * @param $slug
+     * @return |null
+     */
+    function customPage($slug)
+    {
+        try {
+            $response = self::httpGet(
+                '/pages/' . $slug,
+                [
+                    'token' => $this->accessToken,
+                ]
+            );
+            return !empty($response['result']['data']) ? $response['result']['data'] : null;
+
+        } catch (Exception $e) {
+
+        }
+    }
 }

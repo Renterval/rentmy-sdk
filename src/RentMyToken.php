@@ -43,13 +43,19 @@ Class RentMyToken extends RentMy
      * @param $type
      * @return mixed
      */
-    public function getTokenFromStoreName($name)
+    public function getTokenFromStoreName($name, $params=[])
     {
         try {
-            $response = self::httpGet(
-                '/get-settings?store_name=' . $name
+            $disable_default_time = $params['disable_default_time'] ?? false;
+            $response = self::httpPost(
+                '/apps/access-token',
+                null,
+                [
+                    'store_name' => $name,
+                    'disable_default_time' => $disable_default_time
+                ]
             );
-            return $response['result'];
+            return $response['result']['data'];
         } catch (Exception $e) {
 
         }
