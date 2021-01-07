@@ -52,6 +52,32 @@ class Products extends RentMy
         }
 
     }
+    /**
+     * @param $params
+     * @return mixed
+     */
+    function productsByPrice($params)
+    {
+        try {
+            $get_fields_string='';
+            foreach ($params as $key => $value) {
+                $get_fields_string .= $key . '=' . $value . '&';
+            }
+
+            $get_fields_string = '?' . $get_fields_string;
+            $response = self::httpGet(
+                '/products/list'.$get_fields_string,
+                [
+                    'token' => $this->accessToken,
+                ],
+                null
+            );
+            return $response;
+        } catch (Exception $e) {
+
+        }
+
+    }
 
     /**
      * @param $params

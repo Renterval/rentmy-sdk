@@ -105,4 +105,24 @@ class Pages extends RentMy
 
         }
     }
+    /**
+     * Post email for newsletter subscription
+     * @param $data
+     * @return mixed
+     */
+    function newsSubscribe($data){
+        try {
+            $response = self::httpPost(
+                '/newsletters',
+                [
+                    'token' => $this->accessToken,
+                ],
+                $data
+            );
+
+            return $response['result'];
+        } catch (Exception $e) {
+
+        }
+    }
 }
