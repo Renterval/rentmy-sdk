@@ -23,7 +23,7 @@ class Products extends RentMy
     /**
      * @param $params
      * @return mixed
-     */ 
+     */
     function productList($params)
     {
         try {
@@ -59,18 +59,18 @@ class Products extends RentMy
     function productsByPrice($params)
     {
         try {
-            $get_fields_string='';
-            foreach ($params as $key => $value) {
-                $get_fields_string .= $key . '=' . $value . '&';
-            }
-
-            $get_fields_string = '?' . $get_fields_string;
+//            $get_fields_string='';
+//            foreach ($params as $key => $value) {
+//                $get_fields_string .= $key . '=' . $value . '&';
+//            }
+//
+//            $get_fields_string = '?' . $get_fields_string;
             $response = self::httpGet(
-                '/products/list'.$get_fields_string,
+                '/products/list',
                 [
                     'token' => $this->accessToken,
                 ],
-                null
+                $params
             );
             return $response;
         } catch (Exception $e) {
@@ -78,7 +78,6 @@ class Products extends RentMy
         }
 
     }
-
     /**
      * @param $params
      * @return mixed|string|null
@@ -148,8 +147,11 @@ class Products extends RentMy
     {
         try {
 
-            if (!empty($_SESSION['RentMy']['cart_token']) && !empty($_SESSION['RentMy']['rent_start']) && !empty($_SESSION['RentMy']['rent_end'])) {
-                $add_params = '&token=' . $_SESSION['RentMy']['cart_token'] . '&start_date=' . urlencode($_SESSION['RentMy']['rent_start']) . '&end_date=' . urlencode($_SESSION['RentMy']['rent_end']);
+            if (!empty($_SESSION['RentMy']['rent_start']) && !empty($_SESSION['RentMy']['rent_end'])) {
+                $cart_token= !empty($_SESSION['RentMy']['cart_token']) ?$_SESSION['RentMy']['cart_token'] : '';
+                $start_date =!empty($_SESSION['RentMy']['rent_start']) ?  urlencode($_SESSION['RentMy']['rent_start']) : '';
+                $end_date= !empty($_SESSION['RentMy']['rent_end']) ? urlencode($_SESSION['RentMy']['rent_end']) : '';
+                $add_params = '&token=' . $cart_token . '&start_date=' . $start_date . '&end_date=' . $end_date;
             } else {
                 $add_params = '';
             }
@@ -175,9 +177,12 @@ class Products extends RentMy
     function package_details($product_id, $cart_params = null)
     {
         try {
-
-            if (!empty($cart_params['token']) && !empty($cart_params['start_date']) && !empty($cart_params['end_date'])) {
-                $add_params = '&token=' . $cart_params['token'] . '&start_date=' . $cart_params['start_date'] . '&end_date=' . $cart_params['end_date'];
+            if (!empty($_SESSION['RentMy']['rent_start']) && !empty($_SESSION['RentMy']['rent_end'])) {
+                $cart_token= !empty($_SESSION['RentMy']['cart_token']) ?$_SESSION['RentMy']['cart_token'] : '';
+                $start_date =!empty($_SESSION['RentMy']['rent_start']) ?  urlencode($_SESSION['RentMy']['rent_start']) : '';
+                $end_date= !empty($_SESSION['RentMy']['rent_end']) ? urlencode($_SESSION['RentMy']['rent_end']) : '';
+                $add_params = '&token=' . $cart_token . '&start_date=' . $start_date . '&end_date=' . $end_date;
+                //$add_params = '&token=' . $cart_params['token'] . '&start_date=' . $cart_params['start_date'] . '&end_date=' . $cart_params['end_date'];
             } else {
                 $add_params = '';
             }
@@ -234,19 +239,12 @@ class Products extends RentMy
     function getAvailability($params)
     {
         try {
-            $get_fields_string = '';
-            if (!empty($params)) {
-                foreach ($params as $key => $value) {
-                    $get_fields_string .= $key . '=' . $value . '&';
-                }
-                rtrim($get_fields_string, '&');
-                $get_fields_string = '?' . $get_fields_string;
-            }
             $response = self::httpGet(
-                'products/availability' . $get_fields_string ,
+                '/products/availability'  ,
                 [
                     'token' => $this->accessToken,
-                ]
+                ],
+                $params
 
             );
             return $response;
