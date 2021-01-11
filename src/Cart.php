@@ -61,7 +61,10 @@ class Cart extends RentMy
             $params['token'] = $this->cartToken;
             $response = self::httpPost(
                 '/v2/carts/add',
-                $this->accessToken,
+                [
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
+                ],
                 $params
             );
 
