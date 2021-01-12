@@ -33,18 +33,7 @@ class Products extends RentMy
                     'token' => $this->accessToken,
                     'location' => $this->locationId
                 ],
-                [
-                    'page_no' => $params['page_no'],
-                    'limit' => $params['limit'],
-                    'tag_id' => !empty($params['tag_id'])?$params['tag_id']:'',
-                    'price_max' => !empty($params['price_max'])?$params['price_max']:'',
-                    'price_min' => !empty($params['price_min'])?$params['price_min']:'',
-                    'purchase_type' => !empty($params['purchase_type'])?$params['purchase_type']:'',
-                    'all' => true,
-                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : '',
-                    'search' => !empty($params['search']) ? $params['search'] : ''
-                ]
+                $params
             );
             return $response;
         } catch (Exception $e) {
@@ -91,17 +80,7 @@ class Products extends RentMy
                     'token' => $this->accessToken,
                     'location' => $this->locationId,
                 ],
-                [
-                    'page_no' => $params['page_no'],
-                    'limit' => $params['limit'],
-                    'tag_id' => $params['tag_id'],
-                    'price_max' => $params['price_max'],
-                    'price_min' => $params['price_min'],
-                    'purchase_type' => $params['purchase_type'],
-                    'all' => true,
-                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
-                ]
+               $params
             );
             return $response;
         } catch (Exception $e) {
@@ -123,14 +102,7 @@ class Products extends RentMy
                     'token' => $this->accessToken,
                     'location' => $this->locationId,
                 ],
-                [
-                    'page_no' => $params['page_no'],
-                    'limit' => $params['limit'],
-                    'search' => $params['search'],
-                    'category_id' => '',
-                    'sort' => !empty($params['sort']) ? $params['sort'] : '',
-                    'sort_type' => !empty($params['sort_type']) ? $params['sort_type'] : ''
-                ]
+               $params
             );
             return $response;
         } catch (Exception $e) {
