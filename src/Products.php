@@ -88,7 +88,6 @@ class Products extends RentMy
         }
 
     }
-
     /**
      * @param $params
      * @return mixed|string|null
