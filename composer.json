@@ -1,8 +1,9 @@
 {
     "name": "rentmy/rentmy-sdk",
     "description": "RentMy sdk",
+    "keywords": ["RentMy", "rental", "ecommerce"],
     "type": "library",
-    "license": "MIT", 
+    "license": "MIT",
     "authors": [
         {
             "name": "RentMy",
@@ -14,6 +15,9 @@
             "RentMy\\": "src/"
         }
     },
-    "require": {},
-    "minimum-stability": "dev"
+    "require": {
+        "php": ">=5.6"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
