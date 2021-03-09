@@ -467,6 +467,25 @@ class Products extends RentMy
         }
 
     }
+    /** Check package add ons and return add on products
+     * @param $data
+     * @return mixed
+     */
+    function custom_builder_addons($product_id, $custom_builder)
+    {
+        try {
+            $location_id = $this->locationId;
+            $response = self::httpGet(
+                '/products/' . $product_id . '/addons?required=true&location=' . $location_id .'&custom_builder='.$custom_builder,
+                [
+                    'token' => $this->accessToken,
+                    'location' => $location_id
+                ]
+            );
+            return $response['result'];
+        } catch (Exception $e) {
+        }
+    }
 }
 
 ?>
