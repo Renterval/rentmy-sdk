@@ -122,11 +122,17 @@ class Cart extends RentMy
      * view cart using these method
      * @return mixed|string|null
      */
-    function viewCart()
+    function viewCart($data = [])
     {
         try {
+            $params = '';
+            if (!empty($data)) {
+                if (!empty($data['billing_country']) && !empty($data['billing_zipcode']) && !empty($data['billing_city']) && !empty($data['billing_state'])) {
+                    $params .= '?billing_country=' . urlencode($data['billing_country']) . '&billing_zipcode=' . urlencode($data['billing_zipcode']) . '&billing_city=' . urlencode($data['billing_city']) . '&billing_state=' . urlencode($data['billing_state']);
+                }
+            }
             $response = self::httpGet(
-                '/carts/' . $this->cartToken,
+                '/carts/' . $this->cartToken . $params,
                 $this->accessToken,
                 null
             );
@@ -314,5 +320,4 @@ class Cart extends RentMy
     {
         return $_SESSION['RentMy']['rent_end'] ?? null;
     }
-
 }
