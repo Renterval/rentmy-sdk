@@ -270,7 +270,6 @@ class Checkout extends RentMy
         }
     }
 
-    // finally do the checkout process
     function doCheckout($data)
     {
         try {
@@ -279,16 +278,16 @@ class Checkout extends RentMy
                 return ['status' => 'NOK', 'message' => 'Invalid cart.'];
             }
             $checkout_info = [
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'mobile' => $data['mobile'],
-                'email' => $data['email'],
-                'address_line1' => $data['address_line1'],
-                'address2' => $data['address_line2'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'country' => $data['country'],
-                'zipcode' => $data['zipcode'],
+                'first_name' => $data['first_name'] ?? '',
+                'last_name' => $data['last_name'] ?? '',
+                'mobile' => $data['mobile'] ?? '',
+                'email' => $data['email'] ?? '',
+                'address_line1' => $data['address_line1'] ?? '',
+                'address2' => $data['address_line2'] ?? '',
+                'city' => $data['city'] ?? '',
+                'state' => $data['state'] ?? '',
+                'country' => $data['country'] ?? '',
+                'zipcode' => $data['zipcode'] ?? '',
                 'custom_values' => null,
                 'special_instructions' => isset($data['special_instructions']) ? $data['special_instructions'] : '',
                 'special_requests' => isset($data['special_requests']) ? $data['special_requests'] : '',
@@ -296,32 +295,33 @@ class Checkout extends RentMy
                 'fieldSelection' => null,
                 'fieldText' => null,
                 'pickup' => '',
-                'delivery' => $data['delivery'],
-                'shipping_method' => $data['shipping_method'],
+                'delivery' => $data['delivery'] ?? '',
+                'shipping_method' => $data['shipping_method'] ?? '',
                 'currency' => 'USD',
                 'token' => $cartToken,
                 'custom_values' => null,
                 'signature' => null,
-                'gateway_id' => $data['gateway_id'],
-                'type' => $data['type'],
-                'note' => $data['note'],
-                'payment_gateway_name' => trim($data['payment_gateway_name']),
+                'gateway_id' => $data['gateway_id'] ?? '',
+                'type' => $data['type'] ?? '',
+                'note' => $data['note'] ?? '',
+                'quote' => $data['quote'] ?? false,
+                'payment_gateway_name' => trim($data['payment_gateway_name'] ?? ''),
                 'account' => isset($data['account']) ? $data['account'] : '',
             ];
             if (!empty($info['signature'])) {
                 $checkout_info['signature'] = trim($data['signature']);
             }
-            if ($data['shipping_method'] != 1) {
-                $checkout_info['shipping_address1'] = $data['shipping_address1'];
-                $checkout_info['shipping_address2'] = $data['shipping_address2'];
-                $checkout_info['shipping_city'] = $data['shipping_city'];
-                $checkout_info['shipping_country'] = $data['shipping_country'];
-                $checkout_info['shipping_email'] = $data['email'];
-                $checkout_info['shipping_first_name'] = $data['first_name'];
-                $checkout_info['shipping_last_name'] = $data['last_name'];
-                $checkout_info['shipping_mobile'] = $data['mobile'];
-                $checkout_info['shipping_state'] = $data['shipping_state'];
-                $checkout_info['shipping_zipcode'] = $data['shipping_zipcode'];
+            if (isset($data['shipping_method']) && $data['shipping_method'] != 1) {
+                $checkout_info['shipping_address1'] = $data['shipping_address1'] ?? '';
+                $checkout_info['shipping_address2'] = $data['shipping_address2'] ?? '';
+                $checkout_info['shipping_city'] = $data['shipping_city'] ?? '';
+                $checkout_info['shipping_country'] = $data['shipping_country'] ?? '';
+                $checkout_info['shipping_email'] = $data['email'] ?? '';
+                $checkout_info['shipping_first_name'] = $data['first_name'] ?? '';
+                $checkout_info['shipping_last_name'] = $data['last_name'] ?? '';
+                $checkout_info['shipping_mobile'] = $data['mobile'] ?? '';
+                $checkout_info['shipping_state'] = $data['shipping_state'] ?? '';
+                $checkout_info['shipping_zipcode'] = $data['shipping_zipcode'] ?? '';
             }
             if ($checkout_info['payment_gateway_name'] != 'Stripe' && $checkout_info['type'] == 1) {
                 $checkout_info["expiry"] = $data['exp_month'] . $data['exp_year'];
@@ -344,7 +344,11 @@ class Checkout extends RentMy
                 ],
                 $checkout_info
             );
-            if (!$response['result']['data']['payment']['success']) {
+
+            if ($response['status'] == 'NOK') {
+                return ['status' => 'NOK', 'message' => $response['result']['error']];
+            }
+            if (!$data['quote'] && !$response['result']['data']['payment']['success']) {
                 if (empty($response['result']['data']['payment']['message'])) {
                     $message = "Payment not completed successfully . Order can't be created. Please try again.";
                 } else {

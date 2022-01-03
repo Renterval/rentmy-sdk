@@ -486,6 +486,30 @@ class Products extends RentMy
         } catch (Exception $e) {
         }
     }
+    /** return available time of a date
+     * @param $data
+     * @return mixed
+     */
+    function getAvailableTimeOfDay($data)
+    {
+        try {
+
+            $params = $data;
+            $params['location'] = $this->locationId;
+            $response = self::httpPost(
+                '/products/available-time',
+                [
+                    'token' => $this->accessToken,
+                    'location' => $this->locationId
+                ],
+                $params
+            );
+            return $response;
+        } catch (Exception $e) {
+
+        }
+
+    }
 }
 
 ?>
