@@ -463,4 +463,57 @@ class Checkout extends RentMy
         }
         return $fulfillment;
     }
+
+    /**
+     * Checkout without payment & fulfillment
+     * @param $data
+     * @return array|mixed|string|string[]|void
+     */
+    function doCheckoutWithoutPayment($data){
+        try {
+            $cartToken = $_SESSION['RentMy']['cart_token'];
+            if (empty($cartToken)) {
+                return ['status' => 'NOK', 'message' => 'Invalid cart.'];
+            }
+            $checkout_info = [
+                'address_line1' => $data['address_line1']??'',
+                'city' => $data['city']??'',
+                'country' => $data['country']??'us',
+                'currency' => $data['currency']??'USD',
+                'email' => $data['email']??'',
+                'first_name' => $data['first_name']??'',
+                'last_name' => $data['last_name']??'',
+                'location' => $this->locationId,
+                'mobile' => $data['mobile']??'',
+                'delivery' => $data['delivery']??'',
+                'pickup' => null,
+                'return_to' => isset($data['return_to']) ? $data['return_to'] : '',
+                'state' => isset($data['state']) ? $data['state'] : '',
+                'token' => $cartToken,
+                'type' => $data['type']??'',
+                'zipcode' => $data['type']??'',
+                'payment' => false,
+                'type' => $data['type']??'',
+                'note' => $data['note']??'',
+            ];
+            $response = self::httpPost(
+                '/orders/online',
+                [
+                    'token' => $this->accessToken,
+                    'Location' => $this->locationId
+                ],
+                $checkout_info
+            );
+
+            unset($_SESSION['RentMy']['cart_token']);
+            unset($_SESSION['RentMy']['rent_start']);
+            unset($_SESSION['RentMy']['rent_end']);
+
+            if ($response['status'] == 'NOK'){
+                return ['status' => 'NOK', 'message' => $response['result']['error']];
+            }
+            return $response;
+        } catch (Exception $e) {
+        }
+    }
 }
